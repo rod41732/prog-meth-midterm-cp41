@@ -1,4 +1,4 @@
-package character;
+package simInterface;
 
 public interface IObstructable {
 	void obstructed();

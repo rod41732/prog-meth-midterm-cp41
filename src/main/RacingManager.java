@@ -2,32 +2,40 @@ package main;
 
 import java.util.Scanner;
 
-import org.omg.CORBA.INITIALIZE;
-
 import Provide.*;
-import character.ICharacter;
-import character.IObstructable;
 import character.JumperChocobo;
 import character.Pikachu;
 import character.RunnerChocobo;
+import simInterface.ICharacter;
+import simInterface.IObstructable;
 public class RacingManager {
-	public double GOAL;
-	public ICharacter characters[];
-	public boolean hasWinner;
+	public static double GOAL;
+	public static ICharacter characters[];
+	public static boolean _hasWinner;
 	
 	
-	public double getGoal() {
+	public static double getGoal() {
 		return GOAL;
 	}
 	
-	public ICharacter[] getCharacters() {
+	public static ICharacter[] getCharacters() {
 		return characters;
 	}
-	public boolean HasWinner() {
-		return hasWinner;
+	public static boolean hasWinner() {
+		return _hasWinner;
 	}
 	
-	public void initializeCharacter() {
+	public static void decreaseObstructedDuration() {
+		for (int i=0; i<3; i++) {
+			if (characters[i] instanceof IObstructable) {
+				int d = Math.max(((IObstructable)characters[i]).getObstructedDuration()-1, 0);
+				((IObstructable)characters[i]).setObstructedDuration(d);
+			}
+		}
+	}
+	
+	public static void initializeCharacter() {
+		GOAL = 100;
 		characters = new ICharacter[3];
 		characters[0] = new RunnerChocobo();
 		characters[0].start();
@@ -37,23 +45,29 @@ public class RacingManager {
 		characters[2].start();
 	}
 	
-	public void sortCharacter() {
-		for (int i=0; i<characters.length; i++) {
-			for (int j=i+1; j<characters.length; j++) {
-				ICharacter t, a = characters[i], b = characters[j];
-				if (a.compareTo(b) == 1)
-					{t = a; a = b; b =t;}
+	public static void sortCharacter() {
+		for (int i=0; i<3; i++) {
+			for (int j=1; j<3; j++) {
+				ICharacter t, a = characters[j-1], b = characters[j];
+				if (a.compareTo(b) == 1) {
+//					System.out.println(a);
+//					System.out.println("is more than");
+//					System.out.println(b);
+					t = characters[j-1];
+					characters[j-1] = characters[j];
+					characters[j] = t;
+				}
 			}
 		}
 	}
 	
-	public boolean checkWinner(ICharacter t) {
-		if (t.getDistance() >= GOAL)
-			return hasWinner = true;
+	public static boolean checkWinner(ICharacter t) {
+		if (Double.compare(t.getDistance(), GOAL) >= 0)
+			return _hasWinner = true;
 		return false;
 	}
 	
-	public void randomObstructedCharacters() {
+	public static void randomObstructedCharacters() {
 		int res = Provide.Library.randomChance();
 		boolean oc = false, op = false;
 		if (res <= 20) oc = true;
@@ -74,10 +88,22 @@ public class RacingManager {
 		kb.nextLine();
 		kb.close();
 		System.out.printf("Initialized Characters\n");
-		RacingManager rm = new RacingManager();
-		rm.initializeCharacter();
-		while (!rm.HasWinner()) {
-			
+		initializeCharacter();
+		int i=0;
+		while (!hasWinner()) {
+			System.out.println(i++);
+			sortCharacter();
+			randomObstructedCharacters();
+			for (ICharacter x: characters) {
+				System.out.println(x);
+				x.run();
+				if (checkWinner(x)) {
+					System.out.println("win");
+					break;
+				}
+			}
+			decreaseObstructedDuration();
+//			if (i == 2) break;
 		}
 	}
 

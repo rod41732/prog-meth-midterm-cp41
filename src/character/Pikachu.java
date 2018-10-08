@@ -1,5 +1,8 @@
 package character;
 
+import simInterface.ICharacter;
+import simInterface.IObstructable;
+
 public class Pikachu implements ICharacter, IObstructable {
 	private int obstructedDuration;
 	private double speed;
@@ -35,11 +38,13 @@ public class Pikachu implements ICharacter, IObstructable {
 	@Override
 	public void run() {
 		if (getObstructedDuration() == 0)
-			setDistance(getDistance() + speed);
+			setDistance(getDistance() + getSpeed());
 	}
 
 	@Override
 	public double getSpeed() {
+		if (obstructedDuration > 0)
+			return 0;
 		return speed;
 	}
 
@@ -64,8 +69,12 @@ public class Pikachu implements ICharacter, IObstructable {
 		return 1;
 	}
 	public int compareTo(ICharacter o) {
-		if (getSpeed() != o.getSpeed())
-			return Double.compare(getSpeed(), o.getSpeed());
-		return Double.compare(o.getPriority(), getPriority());
+		if (Double.compare(getDistance(), o.getDistance()) != 0)
+			return Double.compare(getDistance(), o.getDistance()) < 0 ? -1 : 1;
+		return Double.compare(o.getPriority(), getPriority()) < 0 ? -1 : 1;
+	}
+	
+	public String toString() {
+		return String.format("Pikachu Speed=%.2f, Dist=%.2f, Obstructed=%d", getSpeed(), getDistance(), getObstructedDuration());
 	}
 }

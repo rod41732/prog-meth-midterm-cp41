@@ -125,6 +125,13 @@ public class TestRacingManager
 		assertTrue("3rd Character must be RunnerChocobo", characters[2] instanceof RunnerChocobo);
 		
 	}
+	public void setDistance(double distance1,double distance2,double distance3) {
+		for(ICharacter characters : RacingManager.getCharacters()) {
+			if(characters instanceof RunnerChocobo) ((Chocobo)characters).setDistance(distance1);
+			else if(characters instanceof JumperChocobo) ((Chocobo)characters).setDistance(distance2);
+			else if(characters instanceof Pikachu) ((Pikachu)characters).setDistance(distance3);
+		}
+	}
 	
 	@Test public void testDecreaseObstructedDuration() {
 		
@@ -316,13 +323,7 @@ public class TestRacingManager
 		}
 	}
 	
-	public void setDistance(double distance1,double distance2,double distance3) {
-		for(ICharacter characters : RacingManager.getCharacters()) {
-			if(characters instanceof RunnerChocobo) ((Chocobo)characters).setDistance(distance1);
-			else if(characters instanceof JumperChocobo) ((Chocobo)characters).setDistance(distance2);
-			else if(characters instanceof Pikachu) ((Pikachu)characters).setDistance(distance3);
-		}
-	}
+
 	
 	@Test public void testComparableTo() {
 		RunnerChocobo runnerChocobo= new RunnerChocobo();
@@ -407,6 +408,7 @@ public class TestRacingManager
 		//The remaining cases
 		assertFalse(RacingManager.checkWinner(characters[1]));
 		assertTrue(RacingManager.checkWinner(characters[2]));
-	}
+	}/*
+	*/
 }
 

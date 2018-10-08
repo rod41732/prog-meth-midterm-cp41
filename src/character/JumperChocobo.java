@@ -1,5 +1,7 @@
 package character;
 
+import simInterface.IObstructable;
+
 public class JumperChocobo extends Chocobo implements IObstructable{
 	private int turnCount;
 	private int obstructedDuration;
@@ -35,12 +37,9 @@ public class JumperChocobo extends Chocobo implements IObstructable{
 	}
 	
 	public void run() {
-		turnCount ++;
+		turnCount++;
 		if (turnCount%2 == 0) {
-			if (obstructedDuration > 0) 				
-				setDistance(getDistance() + this.getSpeed()/2);
-			else 				
-				setDistance(getDistance() + this.getSpeed());
+			setDistance(getDistance() + getSpeed());
 		}
 	}
 	
@@ -48,5 +47,7 @@ public class JumperChocobo extends Chocobo implements IObstructable{
 		if (obstructedDuration > 0) return;
 		setObstructedDuration(2);
 	}
-	
+	public String toString() {
+		return String.format("Jumper Chocobo Speed=%.2f, Dist=%.2f, Obstructed=%d", getSpeed(), getDistance(), getObstructedDuration());
+	}
 }
